@@ -1,0 +1,40 @@
+name: Testingosak
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+      
+jobs:
+  test:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+          echo "DB_LOGIN=${{ secrets.CON_STRING }}" >> .env
+          echo "KEY=${{ secrets.KEY }}" >> .env
+      - name: Run tests
+        run: pytest --cov
+     
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: jakubklimo/STIN-weather

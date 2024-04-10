@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="cz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 90vh;
+            font-family: "Segoe UI", sans-serif;
+            margin: 0;
+            /*position: relative;*/
+        }
+
+        button,
+        input[type="button"],
+        input[type="submit"],
+        input[type="reset"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .sub {
+            width: 50%;
+            height: auto;
+            text-align: center;
+
+            border-radius: 5px;
+            font-size: 15px;
+            color: black;
+        }
+
+        .pay {
+            width: 80%;
+            max-width: 500px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            background-color: #EEEEEE;
+            margin: auto;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .pay h1 {
+            margin-top: 40px;
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .pay-form {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+
+        .form-control {
+            border-radius: 5px;
+            width: 50%;
+            height: 30px;
+
+            border: 0;
+            text-align: center;
+        }
+
+        .btn-sidebyside {
+            display: flex;
+            width: 50%;
+            height: 30px;
+            margin-bottom: 40px;
+            padding: 5px;
+        }
+
+        .btn-sidebyside a {
+            display: flex;
+            margin-left: 5px;
+            width: 50%;
+            height: 100%;
+
+            background-color: white;
+            color: black;
+            text-decoration: none;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 5px;
+            font-size: 50;
+        }
+
+        .btn-sidebyside a:hover {
+            background-color: #d3d3ff;
+        }
+
+        .btn {
+            margin-right: 5px;
+            border-radius: 5px;
+            width: 50%;
+            height: 100%;
+
+            background-color: white;
+            border: 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #d3d3ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pay">
+        {% if user.is_subscriber() %}
+        <h1>Extend subscription</h1>
+        <p class="sub">Subscriber to: {{ user.premium_ex.strftime('%d. %m. %Y') }}</p>
+        {% else %}
+        <h1>Buy subscription</h1>
+        {% endif %}
+        <form method="post" class="pay-form">
+            {{ pay_form.hidden_tag() }}
+
+            {{ pay_form.card(class="form-control") }}<br>
+
+            <div class="btn-sidebyside">
+                {{ pay_form.btn1(class="btn btn-outline-primary btn-block") }}
+                {{ pay_form.btn2(class="btn btn-outline-primary btn-block") }}
+                {{ pay_form.btn3(class="btn btn-outline-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

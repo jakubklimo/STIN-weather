@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #fff;
+            color: #444;
+            font-family: "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0 0 15px 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+            font-weight: 700;
+        }
+
+        /*--------------------------------------------------------------
+        # Weather Card
+        --------------------------------------------------------------*/
+        .weather__card {
+            width: 800px;
+            padding: 40px 30px;
+            background-color: #EEEEEE;
+            border-radius: 20px;
+            color: #3C4048;
+        }
+
+        .weather__card h2 {
+            font-size: 120px;
+            font-weight: 700;
+            color: #3C4048;
+            line-height: .8;
+        }
+
+        .weather__card h3 {
+            font-size: 40px;
+            font-weight: 600;
+            line-height: .8;
+            color: #3C4048;
+        }
+
+        .weather__card h4 {
+            font-size: 30px;
+            font-weight: 500;
+            color: #3C4048;
+        }
+
+        .weather__card h5 {
+            font-size: 20px;
+            font-weight: 400;
+            line-height: .1;
+            color: #9D9D9D;
+        }
+
+        .weather__card img {
+            width: 120px;
+            height: 120px;
+        }
+
+        .weather__card .weather__description {
+            background-color: #fff;
+            border-radius: 25px;
+            padding: 5px 13px;
+            border: 0;
+            outline: none;
+            color: #7F8487;
+            font-size: .956rem;
+            font-weight: 400;
+        }
+
+        /*--------------------------------------------------------------
+        # Weather Status
+        --------------------------------------------------------------*/
+        .weather__status img {
+            height: 20px;
+            width: 20px;
+            vertical-align: middle;
+        }
+
+        .weather__status span {
+            font-weight: 500;
+            color: #3C4048;
+            font-size: .9rem;
+            padding-left: .5rem;
+        }
+
+        /*--------------------------------------------------------------
+        # Weather Forecast
+        --------------------------------------------------------------*/
+        .weather__forecast img {
+            height: 25px;
+            width: 25px;
+            vertical-align: middle;
+        }
+
+        .weather__forecast span {
+            font-weight: 500;
+            color: #3C4048;
+            font-size: 1rem;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">Weather App</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('user.logout') }}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.payment') }}">Subscribe</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('user.login') }}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- End Navbar -->
+
+    <style>
+        @media (max-width: 768px) {
+            .row.justify-content-center.text-center>.col-md-1 {
+                margin-top: 10px;
+                /* Mezera mezi prvky pod sebou */
+            }
+        }
+    </style>
+
+    <form method="post" class="mt-5 d-flex justify-content-center">
+        {{ main_form.hidden_tag() }}
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-md-6">
+                    {{ main_form.city(class="form-control") }}
+                </div>
+                <div class="col-md-1">
+                    {{ main_form.submit(class="btn btn-outline-primary btn-block") }}
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- End Form -->
+
+    {% if user %}
+    <style>
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-container a {
+            margin: 5px;
+            /* Mezera mezi tlačítky */
+        }
+    </style>
+
+    <div class="container mt-5">
+        <div class="btn-container">
+            {% for city in user.locations %}
+            <a href="{{ url_for('main.main_get', location=city.location) }}" class="btn btn-primary">{{ city.location
+                }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    {% if weather %}
+    <div class="container mt-5">
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+            <div class="weather__card w-100 mx-auto" style="max-width: 800px;">
+                <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+                    <div class="p-3">
+                        <h2>{{ weather.current.temp_c }}&deg;</h2>
+                    </div>
+                    <div class="p-3">
+                        <img src="{{ weather.current.condition.icon }}" alt="{{ weather.current.condition.text }}">
+                    </div>
+                    <div class="p-3">
+                        <h5>{{ weather.location.localtime }}</h5>
+                        {% if actual %}
+                        <h4>Aktuální poloha</h4>
+                        {% endif %}
+                        <h3>{{ weather.location.name }}</h3>
+                        <span class="weather__description">{{ weather.current.condition.text }}</span>
+                    </div>
+                </div>
+                <div class="weather__status d-flex flex-wrap justify-content-center align-items-center mt-3">
+                    <div class="p-4 d-flex justify-content-center align-items-center">
+                        <img src="https://svgur.com/i/oHw.svg">
+                        <span>{{ weather.current.humidity }}%</span>
+                    </div>
+                    <div class="p-4 d-flex justify-content-center align-items-center">
+                        <img src="https://svgur.com/i/oH_.svg">
+                        <span>{{ weather.current.pressure_mb }} mB</span>
+                    </div>
+                    <div class="p-4 d-flex justify-content-center align-items-center">
+                        <img src="https://svgur.com/i/oKS.svg">
+                        <span>{{ weather.current.wind_kph }}km/h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if user %}
+    {% if not actual and user.is_subscriber() and not fav %}
+    <div class="container mt-5">
+        <div class="btn-container">
+            <a class="btn btn-primary" href="{{ url_for('main.add_to_favourite', location=location) }}">Add to
+                favourites</a>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+
+    {% if forecast and user %}
+    <style>
+        .weather__card_small {
+            width: 300px;
+            height: 300px;
+            background-color: #EEEEEE;
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .weather__card_small h2 {
+            margin: 20px 0 0 0;
+            font-size: 30px;
+            font-weight: 500;
+        }
+
+        .weather__card_small img {
+            max-width: 80%;
+            height: auto;
+        }
+
+        .weather__status_small div {
+            margin: 5px 0;
+        }
+
+        .weather__status_small img {
+            height: 20px;
+            width: 20px;
+            margin-right: 5px;
+        }
+    </style>
+
+    <h4 class="text-center mt-5">Weather Forecast</h4>
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center align-items-center">
+            {% for day in forecast.forecast.forecastday %}
+            <div class="weather__card_small col-md-4 col-sm-4 col-6 mt-3 mx-1">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                    <div class="p-2 text-center">
+                        <h2>{{ day.date }}</h2>
+                        <h2>{{ day.day.avgtemp_c }}&deg;</h2>
+                    </div>
+                    <div class="p-2 text-center">
+                        <img src="{{ 'http:' + day.day.condition.icon }}" alt="{{ day.day.condition.text }}">
+                    </div>
+                    <div class="p-2 text-center">
+                        <span class="weather__description">{{ day.day.condition.text }}</span>
+                    </div>
+                    <div class="weather__status_small d-flex flex-wrap justify-content-center align-items-center mt-auto">
+                        <div class="p-2 d-flex justify-content-center align-items-center">
+                            <img src="https://svgur.com/i/oHw.svg">
+                            <span>{{ day.day.avghumidity }}%</span>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center align-items-center">
+                            <img src="https://svgur.com/i/oKS.svg">
+                            <span>{{ day.day.maxwind_kph }}km/h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if history and user %}
+    {% if user.is_subscriber() %}
+    <h4 class="text-center mt-5">Weather History</h4>
+    <div class="container mb-5">
+        <div class="d-flex flex-wrap justify-content-center align-items-center">
+            {% for day in history %}
+            <div class="weather__card_small col-md-4 col-sm-4 col-6 mt-3 mx-1">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                    <div class="p-2 text-center">
+                        <h2>{{ day.time }}</h2>
+                        <h2>{{ day.temp_c }}&deg;</h2>
+                    </div>
+                    <div class="p-2 text-center">
+                        <img src="{{ 'http:' + day.condition.icon }}" alt="{{ day.condition.text }}">
+                    </div>
+                    <div class="p-2 text-center">
+                        <span class="weather__description">{{ day.condition.text }}</span>
+                    </div>
+                    <div class="weather__status_small d-flex flex-wrap justify-content-center align-items-center mt-auto">
+                        <div class="p-2 d-flex justify-content-center align-items-center">
+                            <img src="https://svgur.com/i/oHw.svg">
+                            <span>{{ day.humidity }}%</span>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center align-items-center">
+                            <img src="https://svgur.com/i/oKS.svg">
+                            <span>{{ day.wind_kph }}km/h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    
+</body>
+
+</html>

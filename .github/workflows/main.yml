@@ -31,7 +31,7 @@ jobs:
           echo "DB_LOGIN=${{ secrets.CON_STRING }}" >> .env
           echo "KEY=${{ secrets.KEY }}" >> .env
       - name: Run tests
-        run: pytest --cov
+        run: python -m pytest --cov=project
      
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1

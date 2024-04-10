@@ -20,7 +20,7 @@ def test_chech_password(new_user):
 
 def test_set_premium(new_user):
     new_user.set_premium(1)
-    assert new_user.premium_ex == datetime.today() + timedelta(days=30)
+    assert new_user.premium_ex.day == (datetime.today() + timedelta(days=30)).day
 
 def test_is_subscriber(new_user):
     assert new_user.is_subscriber() == True

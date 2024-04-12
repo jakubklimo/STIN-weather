@@ -5,21 +5,11 @@ from dotenv import load_dotenv
 from .service.database import db
 
 
-def create_app(type):
-    load_dotenv(dotenv_path=".env")
+def create_app():
     app = Flask(__name__, template_folder='templates')
 
-    if type == "test":
-        app.config['TESTING'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        constring = 'sqlite:///:memory:'
-    else:
-        constring = os.getenv("CON_STRING")
-
-    app.config["SECRET_KEY"] = os.getenv("KEY")
-    app.config["SQLALCHEMY_DATABASE_URI"] = constring
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
+    config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
+    app.config.from_object(config_type)
 
     db.init_app(app)
 

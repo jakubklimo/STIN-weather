@@ -4,10 +4,12 @@ from project.models.locations import Location
 from project.service.cookies import create_secure_cookie
 from project import create_app
 from project.service.database import db
+import os
 
 @pytest.fixture
 def app():
-    app = create_app('test')
+    os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+    app = create_app()
     return app
 
 @pytest.fixture(scope='module')
@@ -24,7 +26,8 @@ def new_location():
 @pytest.fixture(scope='module')
 def test_client():
     # Vytvoření testovací databáze
-    app = create_app('test')
+    os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+    app = create_app()
 
     # Vytvoření testovacího klienta pomocí Flask aplikace konfigurované pro testování
     with app.test_client() as testing_client:

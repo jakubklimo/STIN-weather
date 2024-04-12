@@ -52,7 +52,7 @@ def current_location():
     try:
         ip_address = request.remote_addr
         if ip_address == '127.0.0.1':
-            city_name = "Prague"
+            city_name = "Liberec"
             return show_weather(city_name)
         else:
             response = requests.get(f"https://ipinfo.io/%7Bip_address%7D/json")

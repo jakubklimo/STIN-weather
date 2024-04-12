@@ -30,8 +30,6 @@ class PayForm(FlaskForm):
 def main_get():
     main_form = MainForm()
     location = request.args.get('location')
-    #user_ip = request.remote_addr
-    user_ip = '147.230.11.198'
     user = get_current_user()
     if location:
         weather, forecast, history, error, loc = show_weather(location)
@@ -41,12 +39,16 @@ def main_get():
             main_form.process()
             return render_template('index.html', weather=weather, main_form=main_form, user=user, forecast=forecast, history=history, location=location, fav=True)
     else:
-        weather, forecast, history, error, city = current_location()
-        if error:
-            return render_template('index.html', error=error, main_form=main_form, location=city, weather=weather, user=user, forecast=forecast, history=history)
-        else:
-            main_form.process()
-            return render_template('index.html', actual=True, location=city, weather=weather, main_form=main_form, user=user, forecast=forecast, history=history)
+        try:
+            weather, forecast, history, error, city = current_location()
+            if error:
+                return render_template('index.html', error=error, main_form=main_form, location=city, weather=weather, user=user, forecast=forecast, history=history)
+            else:
+                main_form.process()
+                return render_template('index.html', actual=True, location=city, weather=weather, main_form=main_form, user=user, forecast=forecast, history=history)
+        except Exception as e:
+            weather, forecast, history, error, loc = show_weather('Liberec')
+            return render_template('index.html', weather=weather, main_form=main_form, user=user, forecast=forecast, history=history, location=location, fav=True)
     
 
 @main_bp.route('/', methods=['POST'])

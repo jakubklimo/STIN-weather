@@ -48,7 +48,7 @@ def main_get():
                 return render_template('index.html', actual=True, location=city, weather=weather, main_form=main_form, user=user, forecast=forecast, history=history)
         except Exception as e:
             weather, forecast, history, error, loc = show_weather('Liberec')
-            return render_template('index.html', weather=weather, main_form=main_form, user=user, forecast=forecast, history=history, location=location, fav=True)
+            return render_template('index.html', weather=weather, main_form=main_form, user=user, forecast=forecast, history=history, location=location, fav=True, actual=True)
     
 
 @main_bp.route('/', methods=['POST'])
@@ -56,12 +56,10 @@ def main_post():
     main_form = MainForm()
     user = get_current_user()
     if main_form.validate_on_submit():
-        print('here2')
         city = main_form.city.data
         weather, forecast, history, error, loc = show_weather(city)
-        print(weather, error)
         if error:
-            return render_template('index.html', error=error, main_form=main_form, location=city, weather=weather, user=user, forecast=forecast, history=history)
+            return redirect(url_for('main.main_get'))
         else:
             main_form.process()
             return render_template('index.html', weather=weather, main_form=main_form, user=user, forecast=forecast, location=city, history=history)

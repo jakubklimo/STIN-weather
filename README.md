@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/jakubklimo/STIN-weather/graph/badge.svg?token=6UWZEWXDEL)](https://codecov.io/gh/jakubklimo/STIN-weather)
+[![codecov](https://codecov.io/gh/jakubklimo/STIN-weather/graph/badge.svg?token=6UWZEWXDEL)](https://codecov.io/gh/jakubklimo/STIN-weather) [![Static Badge](https://img.shields.io/badge/webov%C3%A1%20str%C3%A1nka-E3F988)](https://weatherklimo.adaptable.app/)
 
 # Systém předpovědi počasí
 
@@ -53,8 +53,10 @@ Příklady chybových stavů pro administrátora:
 - Nemožnost připojit systém k internetu - systém nebude pokračovat, dokud nebude moci úspěšně využívat funkčnosti použitého API
 
 ## UseCase diagram
+![UseCase](images/UseCase.png)
 
 ## Návrh databáze
+![Databese](images/Database.png)
 
 ### Popis databáze
 1. Tabulka uživatel
